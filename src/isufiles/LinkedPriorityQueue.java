@@ -13,6 +13,7 @@ public class LinkedPriorityQueue implements PriorityQueue {
         for (int x = 0; x < size; x++) {
             list[x] = new ArrayList();
         }
+        
     }
 
     public void enqueue(Object obj, int priority) {
@@ -22,10 +23,10 @@ public class LinkedPriorityQueue implements PriorityQueue {
     public Object peekFront() {
         if(list[0].isEmpty()){
             if(list[1].isEmpty()){
-                if(list[2].isEmpty())throw new IllegalStateException("No Patients are waiting");
-                return list[2].get(2);
+                if(list[2].isEmpty())return "";
+                return list[2].get(0);
             }
-            return list[1].get(1);
+            return list[1].get(0);
         }
         return list[0].get(0);
     }
@@ -33,9 +34,9 @@ public class LinkedPriorityQueue implements PriorityQueue {
     
     public Object dequeue(){    
         
-        if(list[0].isEmpty()){
-            if(list[1].isEmpty()){
-                if(list[2].isEmpty())throw new IllegalStateException("No Patients to treat.");
+        if(list[0].isEmpty()){//checks critical queue first 
+            if(list[1].isEmpty()){//then serious queue
+                if(list[2].isEmpty())return "\tNo one to treat";//returns this if all queues are empty
                 return list[2].remove(0);                
             }
             return list[1].remove(0);
@@ -44,7 +45,7 @@ public class LinkedPriorityQueue implements PriorityQueue {
     }
 
     public void enqueue(Object o) {//they didnt give a priority, so we cant 
-        throw new IllegalStateException("Must give a priority");
+        throw new IllegalStateException("Must give a priority");//not used at all
     }
 
     public int size() {

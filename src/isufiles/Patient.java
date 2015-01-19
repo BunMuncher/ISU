@@ -19,7 +19,7 @@ public class Patient {
     
     public String toString(){
         String str="";        
-        str+="Name: " + name + "\t" + condition;
+        str+="\n" + name + "\t" + condition;
         return str;
     }
 }

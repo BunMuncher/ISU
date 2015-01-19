@@ -2,14 +2,15 @@ package isufiles;
 
 import javax.swing.JOptionPane;
 
-
 public class ERGui extends javax.swing.JFrame {
 
     int con;
-    LinkedPriorityQueue linkedQ;
+    Patient p;
+    LinkedPriorityQueue linkedQ = new LinkedPriorityQueue(3);
+
     public ERGui() {
         initComponents();
-        LinkedPriorityQueue linkedQ= new LinkedPriorityQueue(3);
+        txtOut.setText("NAME\tCONDITION\n----------------------------------------");
     }
 
     /**
@@ -42,10 +43,15 @@ public class ERGui extends javax.swing.JFrame {
         btnFair.setBackground(new java.awt.Color(0, 240, 0));
         buttonGroup1.add(btnFair);
         btnFair.setText("Fair");
+        btnFair.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnFair.setBorderPainted(true);
 
         btnCritical.setBackground(new java.awt.Color(240, 0, 0));
         buttonGroup1.add(btnCritical);
         btnCritical.setText("CRITICAL");
+        btnCritical.setToolTipText("");
+        btnCritical.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, java.awt.Color.red, java.awt.Color.red, java.awt.Color.red, java.awt.Color.red));
+        btnCritical.setBorderPainted(true);
         btnCritical.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCriticalActionPerformed(evt);
@@ -55,6 +61,8 @@ public class ERGui extends javax.swing.JFrame {
         btnSerious.setBackground(new java.awt.Color(240, 240, 0));
         buttonGroup1.add(btnSerious);
         btnSerious.setText("Serious");
+        btnSerious.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnSerious.setBorderPainted(true);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Condition:");
@@ -74,7 +82,13 @@ public class ERGui extends javax.swing.JFrame {
         });
 
         btnTreatAll.setText("Treat All");
+        btnTreatAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTreatAllActionPerformed(evt);
+            }
+        });
 
+        txtOut.setEditable(false);
         txtOut.setColumns(20);
         txtOut.setRows(5);
         jScrollPane1.setViewportView(txtOut);
@@ -129,7 +143,7 @@ public class ERGui extends javax.swing.JFrame {
                     .addComponent(btnCritical)
                     .addComponent(btnTreatAll))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -141,21 +155,43 @@ public class ERGui extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCriticalActionPerformed
 
     private void btnScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScheduleActionPerformed
-        if(btnFair.isSelected())con=2;
-        if(btnSerious.isSelected())con=1;
-        if(btnCritical.isSelected())con=0;
-        if(txtName.getText().equals("")){
-            JOptionPane.showMessageDialog(this,"Must enter valid name");
+        if (btnFair.isSelected()) {//sets condition according to button selected
+            con = 2;
+        }
+        if (btnSerious.isSelected()) {
+            con = 1;
+        }
+        if (btnCritical.isSelected()) {
+            con = 0;
+        }
+        if (txtName.getText().equals("")) {
+            JOptionPane.showMessageDialog(this, "Must enter valid name");//gives error if name is blank
             return;
         }
-        Patient p = new Patient(txtName.getText(), con);
-        linkedQ.enqueue(p,con);
-        txtOut.append(p.toString());
+        p = new Patient(txtName.getText(), con);//sets patient 
+        linkedQ.enqueue(p, con);//queues them in proper queue
+        txtOut.append(p.toString());//prints the name and condition of the patient
+        buttonGroup1.clearSelection();        //sets all buttons as unselected, for some reason they are still 'selected'
     }//GEN-LAST:event_btnScheduleActionPerformed
 
     private void btnTreatNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTreatNextActionPerformed
-       
+
+        txtOut.append("\nTreating:" + linkedQ.dequeue()+"... has been treated.");      //removes patient from queue and prints them being treated      
+
+
     }//GEN-LAST:event_btnTreatNextActionPerformed
+
+    private void btnTreatAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTreatAllActionPerformed
+        txtOut.append("\nTreating all patients...\n----------------------------------------");
+        while (true) {
+            if (linkedQ.peekFront().equals("")) {//checks if all queues are empty, if they are it breaks
+                break;
+            } else {
+                txtOut.append("" + linkedQ.dequeue());//treats next patient
+            }
+        }
+        txtOut.append("\nAll patients treated");
+    }//GEN-LAST:event_btnTreatAllActionPerformed
 
     /**
      * @param args the command line arguments
