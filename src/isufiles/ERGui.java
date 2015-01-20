@@ -155,6 +155,7 @@ public class ERGui extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCriticalActionPerformed
 
     private void btnScheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnScheduleActionPerformed
+       con = -1;
         if (btnFair.isSelected()) {//sets condition according to button selected
             con = 2;
         }
@@ -164,31 +165,28 @@ public class ERGui extends javax.swing.JFrame {
         if (btnCritical.isSelected()) {
             con = 0;
         }
-        if (txtName.getText().equals("")) {
-            JOptionPane.showMessageDialog(this, "Must enter valid name");//gives error if name is blank
+        if (txtName.getText().equals("") || con == -1) {
+            JOptionPane.showMessageDialog(this, "Must fill form completely");//gives error if name is blank or button not selected
             return;
         }
         p = new Patient(txtName.getText(), con);//sets patient 
         linkedQ.enqueue(p, con);//queues them in proper queue
         txtOut.append(p.toString());//prints the name and condition of the patient
-        buttonGroup1.clearSelection();        //sets all buttons as unselected, for some reason they are still 'selected'
+        buttonGroup1.clearSelection();        //sets all buttons as unselected
+                
     }//GEN-LAST:event_btnScheduleActionPerformed
 
     private void btnTreatNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTreatNextActionPerformed
 
-        txtOut.append("\nTreating:" + linkedQ.dequeue()+"... has been treated.");      //removes patient from queue and prints them being treated      
+        txtOut.append("\nTreating:" + linkedQ.dequeue()+"... has been treated."); //removes patient from queue and prints them being treated      
 
 
     }//GEN-LAST:event_btnTreatNextActionPerformed
 
     private void btnTreatAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTreatAllActionPerformed
         txtOut.append("\nTreating all patients...\n----------------------------------------");
-        while (true) {
-            if (linkedQ.peekFront().equals("")) {//checks if all queues are empty, if they are it breaks
-                break;
-            } else {
-                txtOut.append("" + linkedQ.dequeue());//treats next patient
-            }
+        while (linkedQ.peekFront()!="") {//checks if all the queues are empty            
+                txtOut.append("" + linkedQ.dequeue() + "...Treating...");//treats next patient if there are any left            
         }
         txtOut.append("\nAll patients treated");
     }//GEN-LAST:event_btnTreatAllActionPerformed
